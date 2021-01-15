@@ -7,10 +7,6 @@ from json2xml.utils import readfromurl, readfromstring, readfromjson
 from schemas import *
 from dicttoxml import dicttoxml
 import xmltodict
-import elementpath
-import xmlschema#works only with xml file
-import sys
-from functools import wraps
 from flask import Flask, Response, Request, current_app, jsonify
 
 
