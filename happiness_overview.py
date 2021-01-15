@@ -18,7 +18,7 @@ class Happiness(db.Model):
 	life_choices_freedom = db.Column(db.FLOAT, nullable = False)
 	generosity = db.Column(db.FLOAT, nullable = False)
 	corruption_perception = db.Column(db.FLOAT, nullable = False)
-	def json(self): #convert output to json
+	def json(self): #function to convert the output to json
 		return { 
 			'rank': self.rank, 
 			'country': self.country,
@@ -33,8 +33,8 @@ class Happiness(db.Model):
 		}
 	def add_happiness_info(_rank, _country, _score, _gdp,_social_support,_healthy_life_expectancy,_life_choices_freedom,_generosity,_corruption_perception):
 		new_happiness_info = Happiness(rank=_rank, country=_country, score=_score, gdp=_gdp,social_support=_social_support,healthy_life_expectancy=_healthy_life_expectancy,life_choices_freedom=_life_choices_freedom,generosity=_generosity,corruption_perception=_corruption_perception)
-		db.session.add(new_happiness_info)  # add new info to database session
-		db.session.commit()  # commit changes to session
+		db.session.add(new_happiness_info)
+		db.session.commit()  
 	def get_all_happiness_info():
 		return [Happiness.json(happiness) for happiness in Happiness.query.all()]
 	def get_country_happiness(_country):
@@ -54,6 +54,6 @@ class Happiness(db.Model):
 		db.session.commit()
 	def delete_happiness_info(_country):
 		Happiness.query.filter_by(country=_country).delete()
-		db.session.commit()  # commiting the new change to our database
+		db.session.commit()
 		
 

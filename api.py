@@ -2,18 +2,17 @@ from happiness_overview import *
 from obesity_overview import *
 from population_overview import *
 from settings import *
-from json2xml import json2xml
+from json2xml import json2xml#used to convert json to xml for xml routes
 from json2xml.utils import readfromurl, readfromstring, readfromjson
 from schemas import *
 from dicttoxml import dicttoxml
 import xmltodict
 import elementpath
-import xmlschema
+import xmlschema#works only with xml file
 import sys
 from functools import wraps
 from flask import Flask, Response, Request, current_app, jsonify
 
-my_schema = xmlschema.XMLSchema('schemas/xsd_schemas/happiness_schema.xsd')
 
 #Happiness routes
 @app.route('/happiness_info', methods=['GET'])

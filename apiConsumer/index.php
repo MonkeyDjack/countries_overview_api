@@ -26,8 +26,9 @@
 	</header>
 
 	<div class="banner">
-		
 	</div>
+
+	<h1 class="announce">Only Json page yet implemented</h1>
 
 	<script type="text/javascript" src="vendor/fusioncharts/js/fusioncharts.js"></script>
 	<script type="text/javascript" src="vendor/fusioncharts/js/fusioncharts.maps.js"></script>
