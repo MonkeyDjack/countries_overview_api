@@ -1,7 +1,70 @@
-fetch('http://127.0.0.1:1234/population_info')
-	.then(response => {
-		return response.json();
-	})
-	.then(population => {
-		console.log(population)
-	})
+var properties = [
+	'country',
+	'population',
+	'y_change',
+	'l_area',
+	'migrants',
+	'age',
+];
+
+$.each( properties, function( i, val ) {
+	
+	var orderClass = '';
+
+	$("#" + val).click(function(e){
+		
+		e.preventDefault();
+		$('.filter__link.filter__link--active').not(this).removeClass('filter__link--active');
+  		$(this).toggleClass('filter__link--active');
+   		$('.filter__link').removeClass('asc desc');
+
+   		if(orderClass == 'desc' || orderClass == '') {
+    			$(this).addClass('asc');
+    			orderClass = 'asc';
+       	} else {
+       		$(this).addClass('desc');
+       		orderClass = 'desc';
+       	}
+
+		var parent = $(this).closest('.header__item');
+    	var index = $(".header__item").index(parent);
+		var $table = $('.table-content');
+		var rows = $table.find('.table-row').get();
+		var isSelected = $(this).hasClass('filter__link--active');
+		var isNumber = $(this).hasClass('filter__link--number');
+			
+		rows.sort(function(a, b){
+
+			var x = $(a).find('.table-data').eq(index).text();
+    			var y = $(b).find('.table-data').eq(index).text();
+			if(isNumber == true) {
+
+    					
+				if(isSelected) {
+					return x - y;
+				} else {
+					return y - x;
+				}
+
+			} else {
+			
+				if(isSelected) {		
+					if(x < y) return -1;
+					if(x > y) return 1;
+					return 0;
+				} else {
+					if(x > y) return -1;
+					if(x < y) return 1;
+					return 0;
+				}
+			}
+    		});
+
+		$.each(rows, function(index,row) {
+			$table.append(row);
+		});
+
+		return false;
+	});
+
+});
