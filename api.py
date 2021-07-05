@@ -1,6 +1,7 @@
 from happiness_overview import *
-from obesity_overview import *
+from obesity_overview import Obesity, ObesityList
 from population_overview import *
+from validator import *
 from settings import *
 from json2xml import json2xml#used to convert json to xml for xml routes
 from json2xml.utils import readfromurl, readfromstring, readfromjson
@@ -10,7 +11,24 @@ import xmltodict
 from flask import Flask, Response, Request, current_app, jsonify
 
 
-#Happiness routes
+@api.representation('application/xml') #application/xml header
+def output_xml(data, code, headers=None):
+	resp = make_response(dumps({'response' : data}), code) # parses data from db to xml with response as a root
+	resp.headers.extend(headers or {})
+	return resp
+
+@api.representation('application/json')
+def output_json(data, code, headers=None):
+	resp = make_response(json.dumps({'response': data}), code)
+	resp.headers.extend(headers or {})
+	return resp
+
+#obesity routes
+api.add_resource(ObesityList, '/obesitylist',
+                                      '/')
+api.add_resource(Obesity, '/obesitylist/<record_country>')
+
+
 @app.route('/happiness_info', methods=['GET'])
 def get_happiness_info():
 	return jsonify(Happiness.get_all_happiness_info())
@@ -43,8 +61,11 @@ def remove_happiness_info(country):
 #Happiness xml routes
 @app.route('/happiness_infoxml', methods=['GET'])
 def get_happiness_infoxml():
-	xml= json2xml.Json2xml(Happiness.get_all_happiness_info(), wrapper="happiness_overview",pretty=True, attr_type=False).to_xml()
-	return xml
+	xml= json2xml.Json2xml(Happiness.get_all_happiness_info(), wrapper="happiness_overview", attr_type=False).to_xml()
+	if validate(xml, "schemas/xsd_schemas/happiness_schema.xsd"):
+		return xml
+	else:
+		return print('Not valid! :(')
 
 @app.route('/happiness_infoxml/<string:country>', methods=['GET'])
 def get_happiness_info_by_countryxml(country):
@@ -68,62 +89,7 @@ def update_happiness_infoxml(country):
 	response = Response("info updated!", 201, mimetype='application/xml')
 	return response
 
-#Obesity routes
-@app.route('/obesity_info', methods=['GET'])
-def get_obesity_info():
-	return jsonify(Obesity.get_all_obesity_info())
 
-@app.route('/obesity_info/<string:country>', methods=['GET'])
-def get_obesity_info_by_country(country):
-	return_value = Obesity.get_country_obesity(country)
-	return jsonify(return_value)
-
-@app.route('/obesity_info', methods=['POST'])
-def add_obesity_info():
-	request_data = request.get_json()
-	Obesity.add_obesity_info(request_data["country"], request_data["both_sexes"], request_data["male"], request_data["female"])
-	response = Response("info added!", 201, mimetype='application/json')
-	return response
-
-@app.route('/obesity_info/<string:country>', methods=['PUT'])
-def update_obesity_info(country):
-	request_data = request.get_json()
-	Obesity.update_obesity_info(request_data["country"], request_data["both_sexes"],request_data["male"], request_data["female"]) 
-	response = Response("Info Updated", status=200, mimetype='application/json')
-	return response
-
-@app.route('/obesity_info/<string:country>', methods=['DELETE'])
-def remove_obesity_info(country):
-	Obesity.delete_obesity_info(country)
-	response = Response("Info Deleted", status=200, mimetype='application/json')
-	return response
-
-#Obesity xml routes
-@app.route('/obesity_infoxml', methods=['GET'])
-def get_obesity_infoxml():
-	xml= json2xml.Json2xml(Obesity.get_all_obesity_info(), wrapper="obesity_overview",pretty=True, attr_type=False).to_xml()
-	return xml
-
-@app.route('/obesity_infoxml/<string:country>', methods=['GET'])
-def get_obesity_info_by_countryxml(country):
-	xml = json2xml.Json2xml(Obesity.get_country_obesity(country), wrapper="obesity_overview",pretty=True, attr_type=False).to_xml()
-	return xml
-
-@app.route('/obesity_infoxml', methods=['POST'])
-def add_obesity_infoxml():
-	request_data = request.data
-	request_data = xmltodict.parse(request_data)
-	Obesity.add_obesity_info(request_data["obesity_overview"]["item"]["country"], request_data["obesity_overview"]["item"]["both_sexes"],request_data["obesity_overview"]["item"]["male"], request_data["obesity_overview"]["item"]["female"])
-	response = Response("info added!", 201, mimetype='application/xml')
-	return response
-
-@app.route('/obesity_infoxml/<string:country>', methods=['PUT'])
-def update_obesity_infoxml(country):
-	request_data = request.data
-	request_data = xmltodict.parse(request_data)
-	Obesity.update_obesity_info(request_data["obesity_overview"]["item"]["country"], request_data["obesity_overview"]["item"]["both_sexes"],request_data["obesity_overview"]["item"]["male"], request_data["obesity_overview"]["item"]["female"]) 
-	response = Response("Info Updated", status=200, mimetype='application/xml')
-	return response
 
 #Population json routes
 @app.route('/population_info', methods=['GET'])
@@ -195,6 +161,6 @@ def get_two_tables():
 	return jsonify(db_data)
 
 if __name__ == "__main__":
-	app.run(port=1234, debug=True)
+	app.run(port=5000, debug=True)
 
 	

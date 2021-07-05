@@ -72,7 +72,7 @@
                     }
 
 
-                if(isset(var))
+                
         foreach ($informationReceived as $informationReceived)  
                 {
                     //insert data from json

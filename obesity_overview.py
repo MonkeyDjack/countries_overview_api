@@ -1,43 +1,65 @@
+from flask_restful import Resource
 from settings import *
 import json
 import simplexml
+import dicttoxml
 from sqlalchemy import desc
 
 db = SQLAlchemy(app)
-ma = Marshmallow(app)
 
-class Obesity(db.Model):
+class ObesityRecord(db.Model):
 	__tablename__ = 'obesity_overview'
 	country = db.Column(db.String(40), primary_key=True, unique=True)
 	both_sexes = db.Column(db.FLOAT, nullable = False)
 	male = db.Column(db.FLOAT, nullable = False)
 	female = db.Column(db.FLOAT, nullable = False)
-	def json(self):
-		return{
-			'country': self.country,
-			'both_sexes': self.both_sexes,
-			'male': self.male,
-			'female': self.female
-		}
 
-	def add_obesity_info(_country, _both_sexes, _male, _female):
-		new_obesity_info = Obesity(country = _country, both_sexes = _both_sexes, male = _male, female = _female)
-		db.session.add(new_obesity_info)
+	def serialize(self): #function to convert the output to json
+			return { 
+				'countryOverview':{
+				'country': self.country,
+				'both_sexes': self.both_sexes, 
+				'male': self.male, 
+				'female': self.female
+				}
+			}
+
+parser = reqparse.RequestParser(bundle_errors=True)
+parser.add_argument('country', type=str, required=True, help="country is required parameter!")
+parser.add_argument('both_sexes', type=float, required=True, help="both_sexes is required parameter!")
+parser.add_argument('male', type=float, required=True, help="male is required parameter!")
+parser.add_argument('female', type=float, required=True, help="female is required parameter!")
+
+class ObesityList(Resource):
+	def get(self):
+		records = ObesityRecord.query.all()
+		return [ObesityRecord.serialize(record) for record in records]
+
+	def post(self):
+		args = parser.parse_args()
+		obesity_records = ObesityRecord(country=args['country'], both_sexes=args['both_sexes'], male=args['male'], female=args['female'])
+		db.session.add(obesity_records)
 		db.session.commit()
-	def get_all_obesity_info():
-		return [Obesity.json(obesity) for obesity in Obesity.query.all()]
+		return ObesityRecord.serialize(obesity_records), 201
 
-	def get_country_obesity(_country):
-		return [Obesity.json(Obesity.query.filter_by(country=_country).first())]
+class Obesity(Resource):
+	def get(self, record_country):
+		return ObesityRecord.serialize(ObesityRecord.query.filter_by(country = record_country).first_or_404(description='Record with country={} is not available'.format(record_country)))
 
-	def update_obesity_info(_country, _both_sexes, _male, _female):
-		obesity_to_update = Obesity.query.filter_by(country = _country).first()
-		obesity_to_update.country = _country
-		obesity_to_update.both_sexes = _both_sexes
-		obesity_to_update.male = _male
-		obesity_to_update.female = _female
+	def delete(self, record_country):
+		record = ObesityRecord.query.filter_by(country = record_country)\
+		.first_or_404(description='Record with country={} is not available'.format(record_country))
+		db.session.delete(record)
 		db.session.commit()
-
-	def delete_obesity_info(_country):
-		Obesity.query.filter_by(country = _country).delete()
+		return '', 204
+	
+	def put(self, record_country):
+		args = parser.parse_args()
+		record = ObesityRecord.query.filter_by(country = record_country)\
+            .first_or_404(description='Record with id={} is not available'.format(record_country))
+		record.country = args['country']
+		record.both_sexes = args['both_sexes']
+		record.male = args['male']
+		record.female = args['female']
 		db.session.commit()
+		return ObesityRecord.serialize(record), 201

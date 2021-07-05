@@ -2,7 +2,6 @@ from settings import *
 import json
 
 db = SQLAlchemy(app)
-ma = Marshmallow(app)
 
 class Population(db.Model):
 	__tablename__ = 'population_overview'

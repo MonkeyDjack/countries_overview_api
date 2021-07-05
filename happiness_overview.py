@@ -5,7 +5,7 @@ from sqlalchemy import desc
 
 	#db initialization
 db = SQLAlchemy(app)
-ma = Marshmallow(app)
+#ma = Marshmallow(app)
 
 class Happiness(db.Model):
 	__tablename__ = 'happiness_overview'
@@ -31,6 +31,8 @@ class Happiness(db.Model):
 			'corruption_perception': self.corruption_perception
 		
 		}
+	
+
 	def add_happiness_info(_rank, _country, _score, _gdp,_social_support,_healthy_life_expectancy,_life_choices_freedom,_generosity,_corruption_perception):
 		new_happiness_info = Happiness(rank=_rank, country=_country, score=_score, gdp=_gdp,social_support=_social_support,healthy_life_expectancy=_healthy_life_expectancy,life_choices_freedom=_life_choices_freedom,generosity=_generosity,corruption_perception=_corruption_perception)
 		db.session.add(new_happiness_info)
