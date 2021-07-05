@@ -28,6 +28,10 @@ api.add_resource(ObesityList, '/obesitylist',
                                       '/')
 api.add_resource(Obesity, '/obesitylist/<record_country>')
 
+api.add_resource(PopulationList, '/populationlist',
+                                      '/')
+api.add_resource(Population, '/populationlist/<record_country>')
+
 
 @app.route('/happiness_info', methods=['GET'])
 def get_happiness_info():
@@ -123,31 +127,6 @@ def remove_population_info(country):
 
 #Population xml routes
 
-@app.route('/population_infoxml', methods=['GET'])
-def get_population_infoxml():
-	xml= json2xml.Json2xml(Population.get_all_population_info(), wrapper="population_overview",pretty=True, attr_type=False).to_xml()
-	return xml
-
-@app.route('/population_infoxml/<string:country>', methods=['GET'])
-def get_population_info_by_countryxml(country):
-	xml= json2xml.Json2xml(Population.get_country_population(country), wrapper="population_overview",pretty=True, attr_type=False).to_xml()
-	return xml
-
-@app.route('/population_infoxml', methods=['POST'])
-def add_population_infoxml():
-	request_data = request.data
-	request_data = xmltodict.parse(request_data)
-	Population.add_population_info(request_data["population_overview"]["item"]["country"],request_data["population_overview"]["item"]["population_value"], request_data["population_overview"]["item"]["yearly_change"],request_data["population_overview"]["item"]["land_area"], request_data["population_overview"]["item"]["migrants"],request_data["population_overview"]["item"]["med_age"])
-	response = Response("info added!", 201, mimetype='application/xml')
-	return response
-
-@app.route('/population_infoxml/<string:country>', methods=['PUT'])
-def update_population_infoxml(country):
-	request_data = request.data
-	request_data = xmltodict.parse(request_data)
-	Population.update_population_info(request_data["population_overview"]["item"]["country"],request_data["population_overview"]["item"]["population_value"], request_data["population_overview"]["item"]["yearly_change"],request_data["population_overview"]["item"]["land_area"], request_data["population_overview"]["item"]["migrants"],request_data["population_overview"]["item"]["med_age"]) 
-	response = Response("Info Updated", status=200, mimetype='application/xml')
-	return response
 
 
 
