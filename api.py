@@ -1,13 +1,10 @@
 from happiness_overview import *
-from obesity_overview import *
+from obesity_overview import Obesity, ObesityList
 from population_overview import *
 from validator import *
 from settings import *
-from json2xml import json2xml#used to convert json to xml for xml routes
-from json2xml.utils import readfromurl, readfromstring, readfromjson
+
 from schemas import *
-from dicttoxml import dicttoxml
-import xmltodict
 from flask import Flask, Response, Request, current_app, jsonify
 
 
@@ -24,19 +21,19 @@ def output_json(data, code, headers=None):
 	return resp
 
 #obesity routes
-api.add_resource(ObesityList, '/obesitylist',
+api.add_resource(ObesityList, '/obesity',
                                       '/')
-api.add_resource(Obesity, '/obesitylist/<record_country>')
+api.add_resource(Obesity, '/obesity/<record_country>')
 
 #Population routes routes
-api.add_resource(PopulationList, '/populationlist',
+api.add_resource(PopulationList, '/population',
                                       '/')
-api.add_resource(Population, '/populationlist/<record_country>')
+api.add_resource(Population, '/population/<record_country>')
 
 #Happiness routes routes
-api.add_resource(HappinessList, '/populationlist',
+api.add_resource(HappinessList, '/happiness',
                                       '/')
-api.add_resource(Happiness, '/populationlist/<record_country>')
+api.add_resource(Happiness, '/happiness/<record_country>')
 
 
 
