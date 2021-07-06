@@ -1,5 +1,5 @@
 from happiness_overview import *
-from obesity_overview import Obesity, ObesityList
+from obesity_overview import *
 from population_overview import *
 from validator import *
 from settings import *
@@ -28,104 +28,16 @@ api.add_resource(ObesityList, '/obesitylist',
                                       '/')
 api.add_resource(Obesity, '/obesitylist/<record_country>')
 
+#Population routes routes
 api.add_resource(PopulationList, '/populationlist',
                                       '/')
 api.add_resource(Population, '/populationlist/<record_country>')
 
+#Happiness routes routes
+api.add_resource(HappinessList, '/populationlist',
+                                      '/')
+api.add_resource(Happiness, '/populationlist/<record_country>')
 
-@app.route('/happiness_info', methods=['GET'])
-def get_happiness_info():
-	return jsonify(Happiness.get_all_happiness_info())
-
-@app.route('/happiness_info/<string:country>', methods=['GET'])
-def get_happiness_info_by_country(country):
-	return_value = Happiness.get_country_happiness(country)
-	return jsonify(return_value)
-
-@app.route('/happiness_info', methods=['POST'])
-def add_happiness_info():
-	request_data = request.get_json()
-	Happiness.add_happiness_info(request_data["rank"], request_data["country"],request_data["score"], request_data["gdp"],request_data["social_support"], request_data["healthy_life_expectancy"],request_data["life_choices_freedom"], request_data["generosity"],request_data["corruption_perception"])
-	response = Response("info added!", 201, mimetype='application/json')
-	return response
-
-@app.route('/happiness_info/<string:country>', methods=['PUT'])
-def update_happiness_info(country):
-	request_data = request.get_json()
-	Happiness.update_happiness_info(request_data["rank"], request_data["country"],request_data["score"], request_data["gdp"],request_data["social_support"], request_data["healthy_life_expectancy"],request_data["life_choices_freedom"], request_data["generosity"],request_data["corruption_perception"]) 
-	response = Response("Info Updated", status=200, mimetype='application/json')
-	return response
-
-@app.route('/happiness_info/<string:country>', methods=['DELETE'])
-def remove_happiness_info(country):
-	Happiness.delete_happiness_info(country)
-	response = Response("Info Deleted", status=200, mimetype='application/json')
-	return response
-
-#Happiness xml routes
-@app.route('/happiness_infoxml', methods=['GET'])
-def get_happiness_infoxml():
-	xml= json2xml.Json2xml(Happiness.get_all_happiness_info(), wrapper="happiness_overview", attr_type=False).to_xml()
-	if validate(xml, "schemas/xsd_schemas/happiness_schema.xsd"):
-		return xml
-	else:
-		return print('Not valid! :(')
-
-@app.route('/happiness_infoxml/<string:country>', methods=['GET'])
-def get_happiness_info_by_countryxml(country):
-	xml= json2xml.Json2xml(Happiness.get_country_happiness(country), wrapper="happiness_overview",pretty=True, attr_type=False).to_xml()
-	return xml
-
-@app.route('/happiness_infoxml', methods=['POST'])
-def add_happiness_infoxml():
-
-	request_data = request.data
-	request_data = xmltodict.parse(request_data)
-	Happiness.add_happiness_info(request_data["happiness_overview"]["item"]["rank"], request_data["happiness_overview"]["item"]["country"],request_data["happiness_overview"]["item"]["score"], request_data["happiness_overview"]["item"]["gdp"],request_data["happiness_overview"]["item"]["social_support"], request_data["happiness_overview"]["item"]["healthy_life_expectancy"],request_data["happiness_overview"]["item"]["life_choices_freedom"], request_data["happiness_overview"]["item"]["generosity"],request_data["happiness_overview"]["item"]["corruption_perception"])
-	response = Response("info added!", 201, mimetype='application/xml')
-	return response
-
-@app.route('/happiness_infoxml/<string:country>', methods=['PUT'])
-def update_happiness_infoxml(country):
-	request_data = request.data
-	request_data = xmltodict.parse(request_data)
-	Happiness.update_happiness_info(request_data["happiness_overview"]["item"]["rank"], request_data["happiness_overview"]["item"]["country"],request_data["happiness_overview"]["item"]["score"], request_data["happiness_overview"]["item"]["gdp"],request_data["happiness_overview"]["item"]["social_support"], request_data["happiness_overview"]["item"]["healthy_life_expectancy"],request_data["happiness_overview"]["item"]["life_choices_freedom"], request_data["happiness_overview"]["item"]["generosity"],request_data["happiness_overview"]["item"]["corruption_perception"])
-	response = Response("info updated!", 201, mimetype='application/xml')
-	return response
-
-
-
-#Population json routes
-@app.route('/population_info', methods=['GET'])
-def get_population_info():
-	return jsonify(Population.get_all_population_info())
-
-@app.route('/population_info/<string:country>', methods=['GET'])
-def get_population_info_by_country(country):
-	return_value = Population.get_country_population(country)
-	return jsonify(return_value)
-
-@app.route('/population_info', methods=['POST'])
-def add_population_info():
-	request_data = request.get_json()
-	Population.add_population_info(request_data["country"],request_data["population_value"], request_data["yearly_change"],request_data["land_area"], request_data["migrants"],request_data["med_age"])
-	response = Response("info added!", 201, mimetype='application/json')
-	return response
-
-@app.route('/population_info/<string:country>', methods=['PUT'])
-def update_population_info(country):
-	request_data = request.get_json()
-	Population.update_population_info(request_data["country"],request_data["population_value"], request_data["yearly_change"],request_data["land_area"], request_data["migrants"],request_data["med_age"]) 
-	response = Response("Info Updated", status=200, mimetype='application/json')
-	return response
-
-@app.route('/population_info/<string:country>', methods=['DELETE'])
-def remove_population_info(country):
-	Population.delete_population_info(country)
-	response = Response("Info Deleted", status=200, mimetype='application/json')
-	return response
-
-#Population xml routes
 
 
 
