@@ -1,5 +1,4 @@
 from settings import *
-import json
 
 db = SQLAlchemy(app)
 

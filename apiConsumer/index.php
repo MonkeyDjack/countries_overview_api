@@ -16,7 +16,7 @@
 				<div class="header_navigator">
 					<ul class="header_menu">
 						<li class="header_menu_li"><a href="#" class="menu_li_links">Index</a></li>
-						<li class="header_menu_li"><a href="php/map.php" class="menu_li_links">Json routes</a></li>
+						<li class="header_menu_li"><a href="php/jsonRoutes.php" class="menu_li_links">Json routes</a></li>
 						<li class="header_menu_li"><a href="#" class="menu_li_links">Xml routes</a></li>
 						<li class="header_menu_li"><a href="#" class="menu_li_links">Maps</a></li>
 					</ul>

@@ -1,9 +1,5 @@
 from flask_restful import Resource
 from settings import *
-import json
-import simplexml
-import dicttoxml
-from sqlalchemy import desc
 
 db = SQLAlchemy(app)
 
