@@ -8,7 +8,7 @@ from schemas import *
 from flask import Flask, Response, Request, current_app, jsonify
 
 
-@api.representation('application/xml') #application/xml header
+@api.representation('text/xml') #application/xml header
 def output_xml(data, code, headers=None):
 	resp = make_response(dumps({'response' : data}), code) # parses data from db to xml with response as a root
 	resp.headers.extend(headers or {})

@@ -17,7 +17,7 @@
                     <ul class="header_menu">
                         <li class="header_menu_li"><a href="../../index.php" class="menu_li_links">Index</a></li>
                         <li class="header_menu_li"><a href="../jsonRoutes.php" class="menu_li_links">Json routes</a></li>
-                        <li class="header_menu_li"><a href="../xmlRoutes.php" class="menu_li_links">Xml routes</a></li>
+                        <li class="header_menu_li"><a href="../xmlRoutes" class="menu_li_links">Xml routes</a></li>
                     </ul>
                 </div>
             </div>  
@@ -27,15 +27,32 @@
 	</div>
     
 	 <?php
-	 	$population = curl_init();
+       
+        
+	 	$happiness = curl_init();
         $url = 'http://127.0.0.1:5000/happiness';
         
-        curl_setopt($population,CURLOPT_URL,$url);
-        curl_setopt($population,CURLOPT_HEADER, false);
-        curl_setopt($population,CURLOPT_RETURNTRANSFER,true);
-        $information = curl_exec($population);
-        $informationReceived = json_decode($information,true);
-        curl_close($population);
+        curl_setopt($happiness,CURLOPT_URL,$url);
+        
+        $headers = array(
+            "Accept: text/xml",//defines to accept only xml response
+        );
+        
+        curl_setopt($happiness, CURLOPT_URL,$url);
+        curl_setopt($happiness, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($happiness, CURLOPT_TIMEOUT, 10);
+        curl_setopt($happiness, CURLOPT_HTTPHEADER, $headers);
+
+        $information = curl_exec($happiness);//string of xml result
+        $informationReceived = simplexml_load_string(curl_exec($happiness));
+        echo $informationReceived;
+        if(curl_errno($happiness))
+            print curl_error($happiness);
+        else
+            curl_close($happiness);
+       
+
+
 
         ?>
 
@@ -78,28 +95,23 @@
                         }
                     }
 
-        for($i = 0; $i < count($informationReceived['response']); $i++){
-            $information =  $informationReceived["response"][$i]['countryHappinessOverview'];
+                    foreach ($informationReceived->countryHappinessOverview as $information) {
+                         echo '<div class="table-row">';
+                        echo '<div class="table-data">'.$information->rank.'</div>';
+                        echo '<div class="table-data">'.$information->country.'</div>';
+                        echo '<div class="table-data">'.$information->score.'</div>';        
+                        echo '<div class="table-data">'.$information->gdp.'</div>'; 
+                        echo '<div class="table-data">'.$information->social_support.'</div>'; 
+                        echo '<div class="table-data">'.$information->healthy_life_expectancy.'</div>'; 
+                        echo '<div class="table-data">'.$information->life_choices_freedom.'</div>'; 
+                        echo '<div class="table-data">'.$information->generosity.'</div>'; 
+                        echo '<div class="table-data">'.$information->corruption_perception.'</div>'; 
 
-
-                 //insert data from json
-                 echo '<div class="table-row">';
-                 echo '<div class="table-data">'.$information['rank'].'</div>';
-                 echo '<div class="table-data">'.$information['country'].'</div>';
-                 echo '<div class="table-data">'.$information['score'].'</div>';        
-                 echo '<div class="table-data">'.$information['gdp'].'</div>'; 
-                 echo '<div class="table-data">'.$information['social_support'].'</div>';
-                 echo '<div class="table-data">'.$information['healthy_life_expectancy'].'</div>';
-                 echo '<div class="table-data">'.$information['life_choices_freedom'].'</div>';
-                 echo '<div class="table-data">'.$information['generosity'].'</div>';
-                 echo '<div class="table-data">'.$information['corruption_perception'].'</div>';
-
-                 echo '<div class="table-data"><form action="" method="POST"><input type="submit" value="Edit">
-                <input type="hidden" name="country_delete" value="'.$information["country"].'"/><input type="submit" name="delete" value="Delete"></form> </div>';
-                 echo '</div>';
-
-        }
-                    
+                         echo '<div class="table-data"><form action="" method="POST"><input type="submit" value="Edit">
+                        <input type="hidden" name="country_delete" value="'.$information->country.'"/><input type="submit" name="delete" value="Delete"></form> </div>';
+                        echo '</div>';
+                    }
+       
                     
                 
 	 ?>

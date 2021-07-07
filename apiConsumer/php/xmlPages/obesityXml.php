@@ -17,7 +17,7 @@
                     <ul class="header_menu">
                         <li class="header_menu_li"><a href="../../index.php" class="menu_li_links">Index</a></li>
                         <li class="header_menu_li"><a href="../jsonRoutes.php" class="menu_li_links">Json routes</a></li>
-                        <li class="header_menu_li"><a href="../xmlRoutes.php" class="menu_li_links">Xml routes</a></li>
+                        <li class="header_menu_li"><a href="../xmlRoutes" class="menu_li_links">Xml routes</a></li>
                     </ul>
                 </div>
             </div>  
@@ -27,15 +27,32 @@
 	</div>
     
 	 <?php
-	 	$population = curl_init();
+       
+        
+	 	$obesity = curl_init();
         $url = 'http://127.0.0.1:5000/obesity';
         
-        curl_setopt($population,CURLOPT_URL,$url);
-        curl_setopt($population,CURLOPT_HEADER, false);
-        curl_setopt($population,CURLOPT_RETURNTRANSFER,true);
-        $information = curl_exec($population);
-        $informationReceived = json_decode($information,true);
-        curl_close($population);
+        curl_setopt($obesity,CURLOPT_URL,$url);
+        
+        $headers = array(
+            "Accept: text/xml",//defines to accept only xml response
+        );
+        
+        curl_setopt($obesity, CURLOPT_URL,$url);
+        curl_setopt($obesity, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($obesity, CURLOPT_TIMEOUT, 10);
+        curl_setopt($obesity, CURLOPT_HTTPHEADER, $headers);
+
+        $information = curl_exec($obesity);//string of xml result
+        $informationReceived = simplexml_load_string(curl_exec($obesity));
+        echo $informationReceived;
+        if(curl_errno($obesity))
+            print curl_error($obesity);
+        else
+            curl_close($obesity);
+       
+
+
 
         ?>
 
@@ -72,23 +89,18 @@
                         }
                     }
 
-        for($i = 0; $i < count($informationReceived['response']); $i++){
-            $information =  $informationReceived["response"][$i]['countryObesityOverview'];
+                    foreach ($informationReceived->countryObesityOverview as $information) {
+                         echo '<div class="table-row">';
+                        echo '<div class="table-data">'.$information->country.'</div>';
+                        echo '<div class="table-data">'.$information->both_sexes.'</div>';
+                        echo '<div class="table-data">'.$information->male.'</div>';        
+                        echo '<div class="table-data">'.$information->female.'</div>'; 
 
-
-                 //insert data from json
-                 echo '<div class="table-row">';
-                 echo '<div class="table-data">'.$information['country'].'</div>';
-                 echo '<div class="table-data">'.$information['both_sexes'].'</div>';
-                 echo '<div class="table-data">'.$information['male'].'</div>';        
-                 echo '<div class="table-data">'.$information['female'].'</div>'; 
-
-                 echo '<div class="table-data"><form action="" method="POST"><input type="submit" value="Edit">
-                <input type="hidden" name="country_delete" value="'.$information["country"].'"/><input type="submit" name="delete" value="Delete"></form> </div>';
-                 echo '</div>';
-
-        }
-                    
+                         echo '<div class="table-data"><form action="" method="POST"><input type="submit" value="Edit">
+                        <input type="hidden" name="country_delete" value="'.$information->country.'"/><input type="submit" name="delete" value="Delete"></form> </div>';
+                        echo '</div>';
+                    }
+       
                     
                 
 	 ?>
