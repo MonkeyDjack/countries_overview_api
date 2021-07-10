@@ -17,7 +17,7 @@
                     <ul class="header_menu">
                         <li class="header_menu_li"><a href="../../index.php" class="menu_li_links">Index</a></li>
                         <li class="header_menu_li"><a href="../jsonRoutes.php" class="menu_li_links">Json routes</a></li>
-                        <li class="header_menu_li"><a href="../xmlRoutes" class="menu_li_links">Xml routes</a></li>
+                        <li class="header_menu_li"><a href="../xmlRoutes.php" class="menu_li_links">Xml routes</a></li>
                     </ul>
                 </div>
             </div>  
@@ -95,7 +95,7 @@
                         }
                     }
 
-                    foreach ($informationReceived->countryHappinessOverview as $information) {
+                    foreach ($informationReceived->countryOverview as $information) {
                          echo '<div class="table-row">';
                         echo '<div class="table-data">'.$information->rank.'</div>';
                         echo '<div class="table-data">'.$information->country.'</div>';
@@ -107,7 +107,7 @@
                         echo '<div class="table-data">'.$information->generosity.'</div>'; 
                         echo '<div class="table-data">'.$information->corruption_perception.'</div>'; 
 
-                         echo '<div class="table-data"><form action="" method="POST"><input type="submit" value="Edit">
+                         echo '<div class="table-data"><form action="" method="POST"><a href="editXmlAction.php?country=happiness/'.$information->country.'">Edit</a>
                         <input type="hidden" name="country_delete" value="'.$information->country.'"/><input type="submit" name="delete" value="Delete"></form> </div>';
                         echo '</div>';
                     }

@@ -18,7 +18,6 @@
 						<li class="header_menu_li"><a href="#" class="menu_li_links">Index</a></li>
 						<li class="header_menu_li"><a href="php/jsonRoutes.php" class="menu_li_links">Json routes</a></li>
 						<li class="header_menu_li"><a href="php/xmlRoutes.php" class="menu_li_links">Xml routes</a></li>
-						<li class="header_menu_li"><a href="#" class="menu_li_links">Maps</a></li>
 					</ul>
 				</div>
 			</div>	
@@ -28,10 +27,13 @@
 	<div class="banner">
 	</div>
 
-	<h1 class="announce">Only Json page yet implemented</h1>
+	<h1 class="announce"></h1>
 
 	<script type="text/javascript" src="vendor/fusioncharts/js/fusioncharts.js"></script>
 	<script type="text/javascript" src="vendor/fusioncharts/js/fusioncharts.maps.js"></script>
 	<script type="text/javascript" src="vendor/fusioncharts/js/themes/fusioncharts.theme.fusion.js"></script>
+
+
+
 </body>
 </html>

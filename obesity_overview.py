@@ -12,7 +12,7 @@ class ObesityRecord(db.Model):
 
 	def serialize(self): #function to convert the output to json
 			return { 
-				'countryObesityOverview':{
+				'countryOverview':{
 					'country': self.country,
 					'both_sexes': self.both_sexes, 
 					'male': self.male, 

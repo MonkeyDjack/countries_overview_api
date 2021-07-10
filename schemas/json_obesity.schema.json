@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "http://example.com/happiness.schema.json",
-  "title": "World average wages per country",
+  "title": "World average obesity per country",
   "description": "Information about world obesity per country",
   "required": [ "obesityBothSexes", "obesityMale", "obesityFemale"],
   "type": "object",

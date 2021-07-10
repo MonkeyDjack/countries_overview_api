@@ -13,7 +13,7 @@ class PopulationRecord(db.Model):
 
 	def serialize(self):
 		return {
-			'countryPopulationOverview':{
+			'countryOverview':{
 				'country': self.country,
 				'population_value': self.population_value,
 				'yearly_change': self.yearly_change,

@@ -1,5 +1,6 @@
+#from general_overview import GeneralRecord
 from happiness_overview import *
-from obesity_overview import Obesity, ObesityList
+from obesity_overview import *
 from population_overview import *
 from validator import *
 from settings import *
@@ -17,6 +18,7 @@ def output_xml(data, code, headers=None):
 @api.representation('application/json')
 def output_json(data, code, headers=None):
 	resp = make_response(json.dumps({'response': data}), code)
+	
 	resp.headers.extend(headers or {})
 	return resp
 
@@ -37,16 +39,13 @@ api.add_resource(Happiness, '/happiness/<record_country>')
 
 
 
+#api.add_resource(GeneralRecord, '/general')
 
 
 #test of join
-@app.route('/happiness_population', methods=['GET'])
-def get_two_tables():
-	db_data = db.session.query(Population, Happiness, Obesity). \
-	select_from(Population).join(Happiness, Happiness.country == Population.country). \
-	join(Obesity, Obesity.country == Population.country).all()
-	db_data = json.dumps([dict(d) for d in db_data])
-	return jsonify(db_data)
+
+#results = db.session.query(HappinessRecord, ObesityRecord, PopulationRecord).join(ObesityRecord, ObesityRecord.country == HappinessRecord.country).join(PopulationRecord, PopulationRecord.country == ObesityRecord.country).with_entities(HappinessRecord.country, HappinessRecord.rank, PopulationRecord.population_value, HappinessRecord.score, ObesityRecord.both_sexes).all()
+#print(results) join of all necessary info from all the datasets
 
 if __name__ == "__main__":
 	app.run(port=5000, debug=True)

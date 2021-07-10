@@ -18,7 +18,7 @@ class HappinessRecord(db.Model):
 	corruption_perception = db.Column(db.FLOAT, nullable = False)
 	def serialize(self): 
 		return { 
-			'countryHappinessOverview':{
+			'countryOverview':{
 				'rank': self.rank, 
 				'country': self.country,
 				'score': self.score, 

@@ -79,7 +79,7 @@
                     }
 
         for($i = 0; $i < count($informationReceived['response']); $i++){
-            $information =  $informationReceived["response"][$i]['countryHappinessOverview'];
+            $information =  $informationReceived["response"][$i]['countryOverview'];
 
 
                  //insert data from json
@@ -94,7 +94,7 @@
                  echo '<div class="table-data">'.$information['generosity'].'</div>';
                  echo '<div class="table-data">'.$information['corruption_perception'].'</div>';
 
-                 echo '<div class="table-data"><form action="" method="POST"><input type="submit" value="Edit">
+                 echo '<div class="table-data"><form action="" method="POST"><a href="editJsonAction.php?country=happiness/'.$information['country'].'">Edit</a>
                 <input type="hidden" name="country_delete" value="'.$information["country"].'"/><input type="submit" name="delete" value="Delete"></form> </div>';
                  echo '</div>';
 
